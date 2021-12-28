@@ -1,7 +1,6 @@
 package gloomy.tankstellenpreise.request;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import gloomy.tankstellenpreise.Station;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 public class StationRequest extends Request {
     private final String apikey;
+    private List<Station> stations;
 
     private float lat = 49.322463f;
     private float lng = 7.339268f;
@@ -24,17 +24,18 @@ public class StationRequest extends Request {
     public StationRequest(String apikey) {
         super("https://creativecommons.tankerkoenig.de/json/list.php");
         this.apikey = apikey;
+        this.stations = new ArrayList<>();
     }
 
-    public void setLat(float lat) {
+    public void setLatitude(float lat) {
         this.lat = lat;
     }
 
-    public void setLng(float lng) {
+    public void setLongitude(float lng) {
         this.lng = lng;
     }
 
-    public void setRad(float rad) {
+    public void setRadius(float rad) {
         this.rad = rad;
     }
 
@@ -44,6 +45,10 @@ public class StationRequest extends Request {
 
     public void setSort(String sort) {
         this.sort = sort;
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 
     public boolean send() {
@@ -60,12 +65,8 @@ public class StationRequest extends Request {
             if(!(new Gson().fromJson(result, JsonObject.class)).get("ok").getAsBoolean()) return false;
 
             String stationJson = new Gson().fromJson(result, JsonObject.class).get("stations").toString();
-            System.out.println(stationJson);
             Type targetClassType = new TypeToken<ArrayList<Station>>() { }.getType();
-            List<Station> stations = new Gson().fromJson(stationJson, targetClassType);
-            for(Station station : stations) {
-                System.out.println(station);
-            }
+            stations = new Gson().fromJson(stationJson, targetClassType);
             return true;
         } catch (Exception e) {
             System.out.println("Failed to request station list. Error: " + e.getMessage());

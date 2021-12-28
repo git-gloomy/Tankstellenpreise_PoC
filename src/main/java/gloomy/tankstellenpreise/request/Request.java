@@ -1,7 +1,5 @@
 package gloomy.tankstellenpreise.request;
 
-import com.google.gson.JsonObject;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -16,7 +14,6 @@ public abstract class Request {
     }
 
     protected String readResult(Map<String, String> parameters) throws Exception {
-        DataOutputStream out;
         URL urlObject = new URL(url + "?" + getParamsString(parameters));
         HttpURLConnection con = (HttpURLConnection) urlObject.openConnection();
 
